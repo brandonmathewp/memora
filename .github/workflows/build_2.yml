@@ -17,7 +17,9 @@ jobs:
           node-version: '20'
 
       - name: Run i18n-fixer to find UI strings
-        run: npx i18n-fixer -f prompt --output i18n_report.txt
+        run: |
+          npm install -g i18n-fixer
+          npx i18n-fixer -f prompt --output i18n_report.txt
         continue-on-error: true   # Don't fail the build if no strings found
 
       - name: Upload i18n scan report (optional)
