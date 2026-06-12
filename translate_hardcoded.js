@@ -3,7 +3,7 @@ const path = require('path');
 const { translate } = require('@vitalets/google-translate-api');
 
 // ===== CONFIGURATION =====
-const TARGET_LANG = 'en';   // Change to your target language (e.g., 'es', 'fr', 'de', 'zh')
+const TARGET_LANG = 'en';   // Change to your target language
 const REPORT_FILE = 'i18n_report.txt';
 const BASE_DIR = process.cwd();
 // =========================
@@ -11,14 +11,17 @@ const BASE_DIR = process.cwd();
 async function parseReport() {
     const content = fs.readFileSync(REPORT_FILE, 'utf8');
     const entries = [];
-    // Matches: | 1 | "text" | file:line | key |
-    const regex = /\|\s*\d+\s*\|\s*"([^"]+)"\s*\|\s*([^:]+):(\d+)/g;
+    // Updated regex: matches | N | "string" | `path:line` | key |
+    // Captures: original string, file path (without backticks), line number
+    const regex = /\|\s*\d+\s*\|\s*"([^"]+)"\s*\|\s*`([^`]+):(\d+)`/g;
     let match;
     while ((match = regex.exec(content)) !== null) {
         const original = match[1];
-        const filePath = path.join(BASE_DIR, match[2].trim());
+        const filePathRaw = match[2].trim();
         const lineNum = parseInt(match[3], 10);
-        // Skip non‑UI placeholders
+        // Convert to absolute path
+        const filePath = path.isAbsolute(filePathRaw) ? filePathRaw : path.join(BASE_DIR, filePathRaw);
+        // Skip placeholder like "sk-..."
         if (original === 'sk-...' || original === '') continue;
         entries.push({ filePath, lineNum, original });
     }
@@ -33,7 +36,7 @@ async function replaceInFile(filePath, lineNum, original, translated) {
     const lines = fs.readFileSync(filePath, 'utf8').split('\n');
     if (lineNum - 1 >= lines.length) return false;
     let oldLine = lines[lineNum - 1];
-    // Try double quotes first, then single quotes
+    // Replace double-quoted string first, then single-quoted
     let newLine = oldLine.replace(`"${original}"`, `"${translated}"`);
     if (newLine === oldLine) {
         newLine = oldLine.replace(`'${original}'`, `'${translated}'`);
@@ -61,8 +64,7 @@ async function main() {
             const res = await translate(entry.original, { to: TARGET_LANG });
             const translated = res.text;
             await replaceInFile(entry.filePath, entry.lineNum, entry.original, translated);
-            // Small delay to avoid rate limits
-            await new Promise(r => setTimeout(r, 200));
+            await new Promise(r => setTimeout(r, 200)); // rate limit
         } catch (err) {
             console.error(`Failed to translate "${entry.original}":`, err.message);
         }
