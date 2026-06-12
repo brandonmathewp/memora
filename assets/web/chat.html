@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Memora Chat</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+  :root {
+    --bg: #fafafa;
+    --user-bubble: #e8e0ff;
+    --ai-bubble: #f5f3ff;
+    --user-text: #1a1a2e;
+    --ai-text: #1a1a2e;
+    --time-color: #999;
+    --primary: #7c5cfc;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a2e;
+      --user-bubble: #2d2b55;
+      --ai-bubble: #16213e;
+      --user-text: #e0e0e0;
+      --ai-text: #e0e0e0;
+      --time-color: #666;
+    }
+  }
+
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: var(--bg);
+    padding: 16px;
+    padding-bottom: 32px;
+    line-height: 1.6;
+    color: var(--user-text);
+  }
+
+  #messages {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .message {
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 15px;
+    word-wrap: break-word;
+    animation: fadeIn 0.2s ease;
+  }
+
+  .message.user {
+    align-self: flex-end;
+    background: var(--user-bubble);
+    color: var(--user-text);
+    border-bottom-right-radius: 4px;
+  }
+
+  .message.assistant {
+    align-self: flex-start;
+    background: var(--ai-bubble);
+    color: var(--ai-text);
+    border-bottom-left-radius: 4px;
+  }
+
+  /* Markdown styles */
+  .message h1, .message h2, .message h3 {
+    margin: 8px 0 4px;
+    font-size: 1.1em;
+  }
+
+  .message p {
+    margin: 4px 0;
+  }
+
+  .message code {
+    background: rgba(0,0,0,0.08);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.9em;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .message code {
+      background: rgba(255,255,255,0.1);
+    }
+  }
+
+  .message pre {
+    background: rgba(0,0,0,0.06);
+    padding: 12px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 8px 0;
+  }
+
+  .message pre code {
+    background: none;
+    padding: 0;
+  }
+
+  .message ul, .message ol {
+    padding-left: 20px;
+    margin: 4px 0;
+  }
+
+  .message blockquote {
+    border-left: 3px solid var(--primary);
+    padding-left: 12px;
+    margin: 8px 0;
+    opacity: 0.8;
+  }
+
+  .message table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 8px 0;
+  }
+
+  .message th, .message td {
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 6px 8px;
+    text-align: left;
+    font-size: 0.9em;
+  }
+
+  .message a {
+    color: var(--primary);
+    text-decoration: underline;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .typing-indicator {
+    align-self: flex-start;
+    background: var(--ai-bubble);
+    color: var(--ai-text);
+    padding: 10px 14px;
+    border-radius: 16px;
+    border-bottom-left-radius: 4px;
+  }
+
+  .typing-indicator span {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--primary);
+    margin: 0 2px;
+    animation: typing 1.4s infinite;
+  }
+
+  .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+  @keyframes typing {
+    0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+    30% { opacity: 1; transform: translateY(-4px); }
+  }
+</style>
+</head>
+<body>
+<div id="messages"></div>
+
+<script>
+  marked.setOptions({
+    breaks: true,
+    gfm: true,
+  });
+
+  function addMessage(text, role) {
+    var html = marked.parse(text);
+    var bubble = '<div class="message ' + role + '">' + html + '</div>';
+    document.getElementById('messages').insertAdjacentHTML('beforeend', bubble);
+    window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>

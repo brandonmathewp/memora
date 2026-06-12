@@ -1,0 +1,13 @@
+{
+  "name": "memora-server",
+  "version": "1.0.0",
+  "description": "Memora minimal server - analytics, announcements, feedback",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node --watch index.js"
+  },
+  "dependencies": {
+    "better-sqlite3": "^11.0.0"
+  }
+}

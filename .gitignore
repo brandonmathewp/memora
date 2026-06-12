@@ -1,0 +1,23 @@
+# Flutter
+**/android/
+**/ios/
+/web/
+**/macos/
+**/linux/
+**/windows/
+build/
+.dart_tool/
+.packages
+.flutter-plugins
+.flutter-plugins-dependencies
+*.iml
+.idea/
+.vscode/
+
+# Server
+server/node_modules/
+server/memora.db
+
+# OS
+.DS_Store
+Thumbs.db
