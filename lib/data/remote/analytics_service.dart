@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../config/constants.dart';
+import '../../config/constants.dart';
 
 class AnalyticsService {
   final Dio _dio = Dio();

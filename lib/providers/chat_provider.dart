@@ -61,14 +61,14 @@ class ChatNotifier extends StateNotifier<ChatState> {
 
   Future<void> _init() async {
     final msgs = await _memoryService.getRecentContext();
-    final soul = await _chatService.shouldGenerateSoul();
+    await _chatService.shouldGenerateSoul();
     state = state.copyWith(messages: msgs);
   }
 
   Future<void> sendMessage(String content) async {
     state = state.copyWith(isLoading: true, error: null);
     try {
-      final reply = await _chatService.sendMessage(content);
+      await _chatService.sendMessage(content);
       final msgs = await _memoryService.getRecentContext();
       state = state.copyWith(
         messages: msgs,

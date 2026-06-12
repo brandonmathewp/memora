@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../services/api_client.dart';
 import '../providers/chat_provider.dart';
 
 class SettingsScreen extends ConsumerStatefulWidget {
@@ -26,7 +25,7 @@ class _SettingsScreenState extends ConsumerState<SettingsScreen> {
     final apiClient = ref.read(apiClientProvider);
     await apiClient.loadConfig();
     setState(() {
-      _baseUrlController.text = apiClient.baseUrl;
+      _baseUrlController.text = apiClient.baseUrl ?? '';
       _isConfigured = apiClient.isConfigured;
     });
   }

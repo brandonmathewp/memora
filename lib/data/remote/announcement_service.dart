@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import '../config/constants.dart';
+import '../../config/constants.dart';
 
 class Announcement {
   final String title;
