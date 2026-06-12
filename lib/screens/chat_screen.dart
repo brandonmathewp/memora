@@ -30,16 +30,6 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
     }
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    ref.listen(chatProvider, (prev, next) {
-      if (next.showSoulSuggestion && next.soulSuggestionJson != null) {
-        _showSoulDialog(next.soulSuggestionJson!);
-      }
-    });
-  }
-
   void _showSoulDialog(String json) {
     showDialog(
       context: context,
@@ -67,6 +57,13 @@ class _ChatScreenState extends ConsumerState<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // ✅ ref.listen moved into build (the correct place)
+    ref.listen(chatProvider, (prev, next) {
+      if (next.showSoulSuggestion && next.soulSuggestionJson != null) {
+        _showSoulDialog(next.soulSuggestionJson!);
+      }
+    });
+
     final chatState = ref.watch(chatProvider);
 
     return Scaffold(
